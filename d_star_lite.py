@@ -130,6 +130,16 @@ class DStarLiteRunner:
             nodes.append(self.nodes[position])
         return nodes
 
+    def get_path_to_goal(self, node):
+        path = []
+        current_node = node
+
+        while current_node != self.goal:
+            path.append(current_node.position)
+            current_node, _ = self.get_lowest_cost_neighbour(current_node)
+        path.append(current_node.position)
+        return path
+
     def find_path(self):
         """
         Performs transitions towards the goal.
