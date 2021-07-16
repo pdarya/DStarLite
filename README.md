@@ -1,3 +1,3 @@
 # DStarLite
 
-![example](images/example.gif =100x20)
+![example](images/example.gif)
