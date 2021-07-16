@@ -1,6 +1,6 @@
 import itertools
-
 import numpy as np
+import re
 
 TRANSITION_COST = 1
 WALL = '#'
@@ -22,7 +22,8 @@ class Grid:
         Read actual grid from a given string.
         """
         row = None
-        for row, line in enumerate(grid_string.split('\n')):
+        grid_string_processed = re.sub(' ', '', grid_string.strip())
+        for row, line in enumerate(grid_string_processed.split('\n')):
             if len(line) != 0:
                 column = None
                 for column, symbol in enumerate(line):
@@ -31,10 +32,10 @@ class Grid:
                     elif symbol == WALL:
                         self.is_wall_cell_actual[row][column] = True
                     else:
-                        raise ValueError('Unexpected symbol: {}'.format(symbol))
-                if column is None or column != self.width:
+                        continue
+                if column is None or column != self.width - 1:
                     raise ValueError('Grid width is {}, but expected value is {}'.format(column, self.width))
-        if row is None or row != self.height:
+        if row is None or row != self.height - 1:
             raise ValueError("Grid height is {}, but expected value is {}".format(row, self.height))
 
     def in_bounds(self, row, column):
