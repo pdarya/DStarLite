@@ -9,6 +9,8 @@ class PriorityQueue:
         return len(self.elements) == 0
 
     def add_node(self, item, priority):
+        # print('priority:', priority)
+        # print('node:', item.position, item.rhs_value, item.g_value)
         heapq.heappush(self.elements, (priority, item))
 
     def get_node(self):

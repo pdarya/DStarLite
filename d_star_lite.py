@@ -101,15 +101,18 @@ class DStarLiteRunner:
             k_new = self.calculate_node_priority(current_node)
 
             if k_old < k_new:
+                # print('k_old < k_new')
                 self.queue.add_node(current_node, k_new)
 
             # overconsistent
             elif current_node.g_value > current_node.rhs_value:
+                # print('overconsistent')
                 current_node.g_value = current_node.rhs_value
                 self.update_nodes(self.get_neighbor_nodes(current_node))
 
             # underconsistent
             else:
+                # print('underconsistent')
                 current_node.g_value = np.inf
                 self.update_nodes(self.get_neighbor_nodes(current_node))
                 self.update_node(current_node)
@@ -124,7 +127,7 @@ class DStarLiteRunner:
             if position not in self.nodes:
                 # adding nodes to mapping when we want to put them in a queue
                 self.nodes[position] = Node(position)
-            nodes.append(position)
+            nodes.append(self.nodes[position])
         return nodes
 
     def find_path(self):
@@ -160,7 +163,7 @@ class DStarLiteRunner:
             # update new walls neighbors
             positions_to_update = set()
             for new_wall_position in new_walls_positions:
-                neighbors_positions = self.graph.get_neighbors(new_wall_position)
+                neighbors_positions = self.graph.get_neighbors(*new_wall_position)
                 for neighbor_position in neighbors_positions:
                     if self.graph.is_traversable(*neighbor_position):
                         # it is near wall and traversable by agents observations
