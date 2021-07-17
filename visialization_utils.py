@@ -5,7 +5,8 @@ from PIL import Image, ImageDraw
 EPS = float_info.epsilon
 
 
-def get_image(grid_map, start_node=None, goal_node=None, traveled_path=None, planned_path=None, scale=30):
+def get_image(grid_map, start_node=None, goal_node=None, traveled_path=None, planned_path=None, scale=30,
+              draw_current_position=True, draw_observed_range=True):
     """
     Get PIL image for the agents state:
         - start, goal position
@@ -18,6 +19,8 @@ def get_image(grid_map, start_node=None, goal_node=None, traveled_path=None, pla
     :param traveled_path: list[tuple(int, int)]
     :param planned_path: list[tuple(int, int)]
     :param scale: int
+    :param draw_current_position : bool
+    :param draw_observed_range : bool
     :return: PIL.Image
     """
     hIm = grid_map.height * scale
@@ -54,19 +57,21 @@ def get_image(grid_map, start_node=None, goal_node=None, traveled_path=None, pla
 
     # draw current position
     current_position = traveled_path[-1]
-    draw.ellipse((
-        current_position[1] * scale,
-        current_position[0] * scale,
-        (current_position[1] + 1) * scale - 1,
-        (current_position[0] + 1) * scale - 1
-    ), fill='blue', width=0)
+    if draw_current_position:
+        draw.ellipse((
+            current_position[1] * scale,
+            current_position[0] * scale,
+            (current_position[1] + 1) * scale - 1,
+            (current_position[0] + 1) * scale - 1
+        ), fill='blue', width=0)
 
     # draw observe range for current position
-    draw.rectangle((
-        (current_position[1] - 2) * scale,
-        (current_position[0] - 2) * scale,
-        (current_position[1] + 3) * scale - 1,
-        (current_position[0] + 3) * scale - 1
-    ), fill=None, width=3, outline='blue')
+    if draw_observed_range:
+        draw.rectangle((
+            (current_position[1] - 2) * scale,
+            (current_position[0] - 2) * scale,
+            (current_position[1] + 3) * scale - 1,
+            (current_position[0] + 3) * scale - 1
+        ), fill=None, width=3, outline='blue')
 
     return image

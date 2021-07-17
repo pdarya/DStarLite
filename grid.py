@@ -89,3 +89,6 @@ class Grid:
                 self.is_wall_cell_observed[row, column] = self.is_wall_cell_actual[row, column]
 
         return new_walls_positions
+
+    def clear_observations(self):
+        self.is_wall_cell_observed = np.zeros((self.height, self.width), dtype=bool)

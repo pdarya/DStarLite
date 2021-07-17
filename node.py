@@ -22,4 +22,3 @@ class Node:
 
     def __lt__(self, other):
         return (self.row < other.row) or (self.row == other.row and self.column < other.column)
-
