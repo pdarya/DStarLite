@@ -6,7 +6,7 @@ import utils
 
 
 class DStarLiteRunner:
-    def __init__(self, graph, start, goal, heuristic=utils.manhattan, observe_range=2):
+    def __init__(self, graph, start, goal, heuristic=utils.manhattan_distance, observe_range=2):
         self.graph = graph
         self.observe_range = observe_range
 
@@ -95,8 +95,10 @@ class DStarLiteRunner:
             self.update_node(node)
 
     def compute_shortest_path(self):
-        while self.queue.get_first_priority() < self.calculate_node_priority(self.current_position) or \
-                self.current_position.rhs_value != self.current_position.g_value:
+        while (
+                not self.queue.empty() and
+                self.queue.get_first_priority() < self.calculate_node_priority(self.current_position)
+        ) or self.current_position.rhs_value != self.current_position.g_value:
             k_old = self.queue.get_first_priority()
             current_node = self.queue.get_node()
             k_new = self.calculate_node_priority(current_node)
@@ -168,7 +170,7 @@ class DStarLiteRunner:
             yield self.current_position, current_path
 
             if not new_walls_positions:
-                print('No changes by moving to {}', self.current_position.position)
+                print('No changes by moving to {}'.format(self.current_position.position))
                 continue
 
             self.k_m += self.heuristic(last_node, self.current_position)
@@ -182,6 +184,7 @@ class DStarLiteRunner:
                     if self.graph.is_traversable(*neighbor_position):
                         # it is near wall and traversable by agents observations
                         positions_to_update.add(neighbor_position)
+            # print('before start:', len(new_walls_positions), positions_to_update)
             self.update_nodes(self.get_nodes_by_position(positions_to_update))
 
             self.compute_shortest_path()

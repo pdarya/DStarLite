@@ -38,6 +38,10 @@ class Grid:
         if row is None or row != self.height - 1:
             raise ValueError("Grid height is {}, but expected value is {}".format(row, self.height))
 
+    def set_grid_from_array(self, actual_grid):
+        assert actual_grid.shape[0] == self.height and actual_grid.shape[1] == self.width
+        self.is_wall_cell_actual = actual_grid
+
     def in_bounds(self, row, column):
         return 0 <= row < self.height and 0 <= column < self.width
 
@@ -75,7 +79,7 @@ class Grid:
         """
         new_walls_positions = []
         for d_row, d_column in itertools.product(
-                range(-observe_range, observe_range + 1), range(observe_range, observe_range + 1)
+                range(-observe_range, observe_range + 1), range(-observe_range, observe_range + 1)
         ):
             row = position_row + d_row
             column = position_column + d_column
