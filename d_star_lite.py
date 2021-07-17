@@ -6,8 +6,9 @@ import utils
 
 
 class DStarLiteRunner:
-    def __init__(self, graph, start, goal, heuristic=utils.manhattan):
+    def __init__(self, graph, start, goal, heuristic=utils.manhattan, observe_range=2):
         self.graph = graph
+        self.observe_range = observe_range
 
         self.current_position = Node(position=start, g_value=np.inf, rhs_value=np.inf)
         self.goal = Node(position=goal, g_value=np.inf, rhs_value=0)
@@ -146,11 +147,11 @@ class DStarLiteRunner:
         """
         # updating graph
         self.graph.observe(self.current_position.row, self.current_position.column,
-                           obs_range=2)
+                           observe_range=self.observe_range)
         last_node = self.current_position
         self.compute_shortest_path()
 
-        yield self.current_position, len(self.nodes)
+        yield self.current_position, self.get_path_to_goal(self.current_position)
 
         while self.current_position != self.goal:
             if self.current_position.g_value == np.inf:
@@ -158,11 +159,14 @@ class DStarLiteRunner:
 
             # get neighbor with the lowest cost
             self.current_position, _ = self.get_lowest_cost_neighbour(self.current_position)
-            yield self.current_position, len(self.nodes)
+            # compute planned path before the graph change
+            current_path = self.get_path_to_goal(self.current_position)
 
             new_walls_positions = self.graph.observe(
-                self.current_position.row, self.current_position.column, obs_range=2,
+                self.current_position.row, self.current_position.column, observe_range=self.observe_range,
             )
+            yield self.current_position, current_path
+
             if not new_walls_positions:
                 print('No changes by moving to {}', self.current_position.position)
                 continue

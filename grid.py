@@ -69,13 +69,13 @@ class Grid:
                 return np.inf
         return TRANSITION_COST
 
-    def observe(self, position_row, position_column, obs_range=2):
+    def observe(self, position_row, position_column, observe_range=2):
         """
         Update grid observed by the agent by coping values from actual grid.
         """
         new_walls_positions = []
         for d_row, d_column in itertools.product(
-                range(-obs_range, obs_range + 1), range(obs_range, obs_range + 1)
+                range(-observe_range, observe_range + 1), range(observe_range, observe_range + 1)
         ):
             row = position_row + d_row
             column = position_column + d_column
